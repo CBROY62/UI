@@ -8,7 +8,7 @@ function App() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/data')
+    axios.get('https://fetchapis-2.onrender.com/api/data')
       .then(res => setUsers(res.data))
       .catch(err => {
         console.error('Error fetching data:', err);
