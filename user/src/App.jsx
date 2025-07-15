@@ -6,13 +6,18 @@ import './App.css';
 function App() {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true); // loading state
 
   useEffect(() => {
     axios.get('https://fetchapis-2.onrender.com/api/data')
-      .then(res => setUsers(res.data))
+      .then(res => {
+        setUsers(res.data);
+        setLoading(false);
+      })
       .catch(err => {
         console.error('Error fetching data:', err);
         setError('Failed to load data');
+        setLoading(false);
       });
   }, []);
 
@@ -28,24 +33,29 @@ function App() {
   return (
     <div className="container">
       <h1 className="heading">User Cards</h1>
+
+      {loading && <div className="loader"></div>}
       {error && <div className="error">{error}</div>}
-      <div className="card-container">
-        {users.map((user, index) => (
-          <motion.div
-            key={user._id}
-            className="card"
-            custom={index}
-            initial="hidden"
-            animate="visible"
-            variants={cardVariants}
-            whileHover={{ scale: 1.05 }}
-          >
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Phone:</strong> {user.phone}</p>
-            <p><strong>Address:</strong> {user.address}</p>
-          </motion.div>
-        ))}
-      </div>
+
+      {!loading && !error && (
+        <div className="card-container">
+          {users.map((user, index) => (
+            <motion.div
+              key={user._id}
+              className="card"
+              custom={index}
+              initial="hidden"
+              animate="visible"
+              variants={cardVariants}
+              whileHover={{ scale: 1.05 }}
+            >
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Phone:</strong> {user.phone}</p>
+              <p><strong>Address:</strong> {user.address}</p>
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
